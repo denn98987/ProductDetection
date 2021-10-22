@@ -12,9 +12,10 @@ def classify():
         if 'image' not in request.files:
             return 'there is no image in form!'
         image = request.files['image']
+        bytes = image.stream.read(-1)
         path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
         image.save(path)
-        return path
+        return bytes
 
         return 'ok'
     return '''
