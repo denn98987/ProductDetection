@@ -42,8 +42,8 @@ def upload_image():
         image = request.files['image']
         if image and allowed_file(image.filename):
             bytes = image.stream.read(-1)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
-            image.save(path)
+            #path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+            #image.save(path)
             return 'ok'
         else:
             response = jsonify({'message': 'File type is not allowed'})
