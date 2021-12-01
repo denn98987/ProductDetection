@@ -34,12 +34,12 @@ def allowed_file(filename):
 @app.route('/api/image', methods=['POST'])
 def upload_image():
     if request.method == 'POST':
-        app.logger.info(request.files)
-        app.logger.info(request.data)
-        app.logger.info(request)
+
         print(request)
-        print("request")
         print(request.files)
+        print(request.data)
+        print(request.values)
+        print(request.json)
         if 'image' not in request.files:
             response = jsonify({'message': 'No image in the request'})
             response.status_code = 400
