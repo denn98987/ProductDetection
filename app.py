@@ -37,6 +37,8 @@ def upload_image():
         app.logger.info(request.files)
         app.logger.info(request.data)
         app.logger.info(request)
+        print(request)
+        print("request")
         if 'image' not in request.files:
             response = jsonify({'message': 'No image in the request'})
             response.status_code = 400
