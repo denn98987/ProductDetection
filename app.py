@@ -1,6 +1,7 @@
 import os
 import base64
 import requests
+import json
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 
@@ -11,9 +12,10 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 upload_url = "https://api.imgbb.com/1/upload"
-url        = 'https://yandex.ru/images/search?source=collections&rpt=imageview&url={}'
+url = 'https://yandex.ru/images/search?source=collections&rpt=imageview&url={}'
 
 triggers = ['wildberries', 'ozon', 'catalog', 'shop', 'lamoda', 'amazon']
+
 
 @app.route('/', methods=['GET', 'POST'])
 def classify():
@@ -39,6 +41,7 @@ def classify():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 @app.route('/api/image', methods=['POST'])
 def upload_image():
     if request.method == 'POST':
@@ -59,15 +62,20 @@ def upload_image():
             print(image_url)
             soup = BeautifulSoup(requests.get(url.format(image_url)).text, 'lxml')
             print(soup.contents)
-            similar = soup.find_all('div', class_='CbirSites-ItemTitle')
+            similar_href = soup.find_all('div', class_='CbirSites-ItemTitle')
+            similar_icon = soup.find_all('div', class_='CbirSites-ItemThumb')
+            similar = zip(similar_href, similar_icon)
             links = []
             shops = []
             for i in similar:
-                href = i.find('a').get('href')
+                href = i[0].find('a').get('href')
+                icon = i[1].find('a').get('href')
                 print(href + "\n")
-                links.append(href)
+                print(icon + "\n")
+                info = Info(href, icon)
+                links.append(info)
                 if contains(href):
-                    shops.append(href)
+                    shops.append(info)
 
             response = jsonify({'links': links, 'shops': shops})
             response.status_code = 200
@@ -86,5 +94,19 @@ def contains(ref):
     return False
 
 
+class Info:
+    def __init__(self, href, icon):
+        self.href = href
+        self.icon = icon
+
+class InfoEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Info):
+            return obj.__dict__
+        return json.JSONEncoder.default(self, obj)
+
+
 if __name__ == '__main__':
+    app.json_encoder = InfoEncoder
     app.run()
+
