@@ -13,6 +13,8 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 upload_url = "https://api.imgbb.com/1/upload"
 url        = 'https://yandex.ru/images/search?source=collections&rpt=imageview&url={}'
 
+triggers = ['wildberries', 'ozon', 'catalog', 'shop', 'lamoda', 'amazon']
+
 @app.route('/', methods=['GET', 'POST'])
 def classify():
     if request.method == 'POST':
@@ -59,17 +61,29 @@ def upload_image():
             print(soup.contents)
             similar = soup.find_all('div', class_='CbirSites-ItemTitle')
             links = []
+            shops = []
             for i in similar:
-                print(i.find('a').get('href') + "\n")
-                links.append(i.find('a').get('href'))
+                href = i.find('a').get('href')
+                print(href + "\n")
+                links.append(href)
+                if contains(href):
+                    shops.append(href)
 
-            response = jsonify({'links': links})
+            response = jsonify({'links': links, 'shops': shops})
             response.status_code = 200
             return response
         else:
             response = jsonify({'message': 'File type is not allowed'})
             response.status_code = 400
             return response
+
+
+def contains(ref):
+    for trigger in triggers:
+        if ref.find(trigger) != -1:
+            return True
+
+    return False
 
 
 if __name__ == '__main__':
