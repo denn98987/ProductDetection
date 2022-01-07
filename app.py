@@ -56,6 +56,7 @@ def upload_image():
             image_url = upload_response["data"]["display_url"]
             print(image_url)
             soup = BeautifulSoup(requests.get(url.format(image_url)).text, 'lxml')
+            print(soup.contents)
             similar = soup.find_all('div', class_='CbirSites-ItemTitle')
             links = []
             for i in similar:
