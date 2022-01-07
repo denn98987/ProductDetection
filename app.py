@@ -99,6 +99,7 @@ class Info:
         self.href = href
         self.icon = icon
 
+
 class InfoEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Info):
@@ -106,7 +107,7 @@ class InfoEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-if __name__ == '__main__':
-    app.json_encoder = InfoEncoder
-    app.run()
+app.json_encoder = InfoEncoder
 
+if __name__ == '__main__':
+    app.run()
