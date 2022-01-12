@@ -4,15 +4,15 @@ import requests
 import json
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
-from flask_cors import CORS, cross_origin
+# from flask_cors import CORS, cross_origin
 
 
 UPLOAD_FOLDER = './'
 
 app = Flask(__name__)
-cors = CORS(app)
+# cors = CORS(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['CORS_HEADERS'] = 'Content-Type'
+# app.config['CORS_HEADERS'] = 'Content-Type'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 upload_url = "https://api.imgbb.com/1/upload"
@@ -47,7 +47,7 @@ def allowed_file(filename):
 
 
 @app.route('/api/image', methods=['POST'])
-@cross_origin()
+# @cross_origin()
 def upload_image():
     if request.method == 'POST':
         if 'image' not in request.files:
