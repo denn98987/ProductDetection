@@ -107,6 +107,14 @@ class InfoEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
+@app.after_request
+def set_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = r"https://61de8e43951297d6d4e36c98--fashion-search.netlify.app/"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    return response
+
+
 app.json_encoder = InfoEncoder
 
 if __name__ == '__main__':
