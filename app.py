@@ -109,7 +109,7 @@ class InfoEncoder(json.JSONEncoder):
 
 @app.after_request
 def set_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = r"https://product-detecting.herokuapp.com/api/image"
     response.headers["Access-Control-Allow-Headers"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "*"
     return response
