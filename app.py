@@ -44,6 +44,13 @@ def allowed_file(filename):
 
 @app.route('/api/image', methods=['POST'])
 def upload_image():
+    @app.after_request
+    def set_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        return response
+
     if request.method == 'POST':
         if 'image' not in request.files:
             response = jsonify({'message': 'No image in the request'})
@@ -105,14 +112,6 @@ class InfoEncoder(json.JSONEncoder):
         if isinstance(obj, Info):
             return obj.__dict__
         return json.JSONEncoder.default(self, obj)
-
-
-@app.after_request
-def set_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "*"
-    return response
 
 
 app.json_encoder = InfoEncoder
